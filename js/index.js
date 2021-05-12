@@ -140,10 +140,12 @@ function buy() {
     basket.insertAdjacentHTML(
       'afterbegin',
       `<li class="list-group-item d-flex justify-content-between align-items-start">
-      <div class="fw-bold">${titleEl}</div>  <div class="ms-2 me-auto"> Стоимость </div>
-      <div class="ms-2 me-auto price-item">${priceEl} UAH </div>
-    <button type="button" class="btn btn-primary btn-clear" >Отмена</button>
-  </li>`,
+<div class="ms-2 me-auto">
+  <div class="fw-bold title-item">${titleEl}</div>
+  Стоимость ${priceEl} UAH
+</div>
+<button type="button" class="btn btn-primary btn-clear" >Отмена</button>
+</li>`,
     )
     sum.textContent = 'Общая стоимость ' + totalSum + 'грн'
   } else {
@@ -171,15 +173,17 @@ function clearItemBasket(event) {
   if (event.target.matches('.btn-clear')) {
     event.preventDefault()
     target = event.target.parentNode
-    const pr = parseInt(target.querySelector('.price-item').textContent)
-    totalSum -= pr
+    const temp = _.find(baking, [
+      'title',
+      target.querySelector('.title-item').textContent,
+    ])
+    totalSum -= temp.price
     target.remove()
     sum.textContent = 'Общая стоимость ' + totalSum + ' грн'
   }
 }
 
 function search(event) {
-  event.preventDefault()
   _.forEach(listBaking.querySelectorAll('.card-title'), function (el) {
     if (el.textContent.toLowerCase() === inputSearch.value.toLowerCase()) {
       target = el.parentNode.previousElementSibling
@@ -189,6 +193,24 @@ function search(event) {
     }
   })
   if (!modal.classList.contains('is-open')) alert('Ничего не найдено')
+}
+
+function search_2(event) {
+  event.preventDefault()
+  string = ''
+  baking.forEach((el) => {
+    if (_.includes(el.title, inputSearch.value.toLowerCase())) {
+      string += `<li><div class="card" style="width: 18rem;">
+      <img src="${el.preview}" class="card-img-top" alt="${el.description}" width ="200" height="150">
+      <div class="card-body">
+        <h5 class="card-title">${el.title}</h5>
+        <span class="card-text">${el.price} UAH</span>
+        <button class="btn btn-primary btn-toBasketMain" >В корзину</button>    </div>
+    </div></li>`
+    }
+  })
+  console.log(string)
+  listBaking.insertAdjacentHTML('afterbegin', string)
 }
 
 btnSearch.addEventListener('click', search)
