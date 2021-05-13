@@ -90,18 +90,22 @@ let priceEl = 0
 let amountEl = 0
 let titleEl = ''
 
-baking.forEach(
-  (el) =>
-    (string += `<li><div class="card" style="width: 18rem;">
+function fill() {
+  listBaking.previousElementSibling.textContent = 'Выпечка'
+  baking.forEach(
+    (el) =>
+      (string += `<li><div class="card" style="width: 18rem;">
     <img src="${el.preview}" class="card-img-top" alt="${el.description}" width ="200" height="150">
     <div class="card-body">
       <h5 class="card-title">${el.title}</h5>
       <span class="card-text">${el.price} UAH</span>
       <button class="btn btn-primary btn-toBasketMain" >В корзину</button>    </div>
   </div></li>`),
-)
+  )
+  listBaking.insertAdjacentHTML('afterbegin', string)
+}
 
-listBaking.insertAdjacentHTML('afterbegin', string)
+fill()
 
 function assign() {
   imgModal.setAttribute('src', target.getAttribute('src'))
@@ -183,7 +187,7 @@ function clearItemBasket(event) {
   }
 }
 
-function search(event) {
+/**function search(event) {
   _.forEach(listBaking.querySelectorAll('.card-title'), function (el) {
     if (el.textContent.toLowerCase() === inputSearch.value.toLowerCase()) {
       target = el.parentNode.previousElementSibling
@@ -193,13 +197,15 @@ function search(event) {
     }
   })
   if (!modal.classList.contains('is-open')) alert('Ничего не найдено')
-}
+}**/
 
 function search_2(event) {
   event.preventDefault()
   string = ''
   baking.forEach((el) => {
-    if (_.includes(el.title, inputSearch.value.toLowerCase())) {
+    if (
+      _.includes(el.title.toLocaleLowerCase(), inputSearch.value.toLowerCase())
+    ) {
       string += `<li><div class="card" style="width: 18rem;">
       <img src="${el.preview}" class="card-img-top" alt="${el.description}" width ="200" height="150">
       <div class="card-body">
@@ -209,11 +215,21 @@ function search_2(event) {
     </div></li>`
     }
   })
-  console.log(string)
-  listBaking.insertAdjacentHTML('afterbegin', string)
+  if (string === '' || inputSearch.value === '') {
+    console.log('alert')
+    alert('Ничего не найдено')
+    inputSearch.value = ''
+    fill()
+  } else {
+    inputSearch.value = ''
+    listBaking.previousElementSibling.textContent = 'Результаты поиска'
+    const listLi = listBaking.querySelectorAll('li')
+    listLi.forEach((el) => listBaking.removeChild(el))
+    listBaking.insertAdjacentHTML('afterbegin', string)
+  }
 }
 
-btnSearch.addEventListener('click', search)
+btnSearch.addEventListener('click', search_2)
 listBaking.addEventListener('click', modalWindow)
 button.addEventListener('click', closeWindow)
 overlay.addEventListener('click', closeWindow)
