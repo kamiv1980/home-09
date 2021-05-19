@@ -173,6 +173,7 @@ function clearBasket() {
   list.forEach((el) => basket.removeChild(el))
   totalSum = 0
   sum.textContent = 'Общая стоимость 0 грн'
+  localStorage.setItem('basket', basket.innerHTML)
 }
 
 function clearItemBasket(event) {
@@ -187,6 +188,7 @@ function clearItemBasket(event) {
     target.remove()
     sum.textContent = 'Общая стоимость ' + totalSum + ' грн'
   }
+  localStorage.removeItem('basket')
 }
 
 function search_2(event) {
