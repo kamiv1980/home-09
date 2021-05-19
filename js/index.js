@@ -106,6 +106,7 @@ function fill() {
 }
 
 fill()
+basket.innerHTML = localStorage.getItem('basket')
 
 function assign() {
   imgModal.setAttribute('src', target.getAttribute('src'))
@@ -152,6 +153,7 @@ function buy() {
 </li>`,
     )
     sum.textContent = 'Общая стоимость ' + totalSum + 'грн'
+    localStorage.setItem('basket', basket.innerHTML)
   } else {
     alert('Нет в наличии')
   }
@@ -187,38 +189,32 @@ function clearItemBasket(event) {
   }
 }
 
-/**function search(event) {
-  _.forEach(listBaking.querySelectorAll('.card-title'), function (el) {
-    if (el.textContent.toLowerCase() === inputSearch.value.toLowerCase()) {
-      target = el.parentNode.previousElementSibling
-      assign()
-      modal.classList.add('is-open')
-      return
-    }
-  })
-  if (!modal.classList.contains('is-open')) alert('Ничего не найдено')
-}**/
-
 function search_2(event) {
   event.preventDefault()
   string = ''
-  baking.forEach((el) => {
-    if (
-      _.includes(el.title.toLocaleLowerCase(), inputSearch.value.toLowerCase())
-    ) {
-      string += `<li><div class="card" style="width: 18rem;">
+  if (inputSearch.value) {
+    baking.forEach((el) => {
+      if (
+        _.includes(
+          el.title.toLocaleLowerCase(),
+          inputSearch.value.toLowerCase(),
+        )
+      ) {
+        string += `<li><div class="card" style="width: 18rem;">
       <img src="${el.preview}" class="card-img-top" alt="${el.description}" width ="200" height="150">
       <div class="card-body">
         <h5 class="card-title">${el.title}</h5>
         <span class="card-text">${el.price} UAH</span>
         <button class="btn btn-primary btn-toBasketMain" >В корзину</button>    </div>
     </div></li>`
-    }
-  })
-  if (string === '' || inputSearch.value === '') {
-    console.log('alert')
+      }
+    })
+  }
+  if (string === '') {
     alert('Ничего не найдено')
     inputSearch.value = ''
+    const listLi = listBaking.querySelectorAll('li')
+    listLi.forEach((el) => listBaking.removeChild(el))
     fill()
   } else {
     inputSearch.value = ''
